@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LIFE-LINK — Dashboard</title>
+<link rel="stylesheet" href="./style.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body" id="dashboard-page">
+
+<!-- SHARED MODAL -->
+<div class="modal-overlay" id="sharedModal">
+  <div class="modal-box">
+    <div class="modal-icon" id="modalIcon">ℹ️</div>
+    <div class="modal-title" id="modalTitle">Alert</div>
+    <div class="modal-msg" id="modalMsg"></div>
+    <button class="modal-btn" onclick="closeModal()">Acknowledge</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="tb-logo" onclick="window.location.href='./index.html'"><span>✚</span> LIFE-LINK</div>
+    <a class="tb-home" href="./index.html">← Home</a>
+    <div class="live-chip"><span class="live-dot live-dot-teal"></span> LIVE</div>
+  </div>
+  <div class="tb-tabs">
+    <button class="tb-tab active" onclick="switchTab('dashboard',this)">📊 Dashboard</button>
+    <button class="tb-tab"        onclick="switchTab('patients',this)">👥 Patients</button>
+    <button class="tb-tab"        onclick="switchTab('analytics',this)">📈 Analytics</button>
+  </div>
+  <div class="tb-right">
+    <span class="tb-time" id="clock">--:--:--</span>
+    <div class="tb-user">
+      <div class="tb-avatar" id="roleEmoji">🏥</div>
+      <span class="tb-uname" id="userDisplay">Staff</span>
+    </div>
+    <button class="tb-logout" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- ======= DASHBOARD TAB ======= -->
+  <div class="tab-panel active" id="tab-dashboard">
+
+    <!-- STAT CARDS -->
+    <div class="stat-grid">
+      <div class="stat-card" style="border-top-color:#0D9488">
+        <div class="stat-card-icon">🛏️</div>
+        <div class="stat-card-num" id="sc-icu"  style="color:#0D9488">10</div>
+        <div class="stat-card-label">ICU Beds Available</div>
+        <div class="stat-card-bar"><div class="stat-card-fill" id="bar-icu"  style="background:#0D9488;width:100%"></div></div>
+        <div class="stat-card-sub" id="sub-icu">10 of 10 available</div>
+      </div>
+      <div class="stat-card" style="border-top-color:#06B6D4">
+        <div class="stat-card-icon">🏨</div>
+        <div class="stat-card-num" id="sc-gen"  style="color:#06B6D4">12</div>
+        <div class="stat-card-label">General Beds Available</div>
+        <div class="stat-card-bar"><div class="stat-card-fill" id="bar-gen"  style="background:#06B6D4;width:100%"></div></div>
+        <div class="stat-card-sub" id="sub-gen">12 of 12 available</div>
+      </div>
+      <div class="stat-card" style="border-top-color:#6366F1">
+        <div class="stat-card-icon">🫁</div>
+        <div class="stat-card-num" id="sc-vent" style="color:#6366F1">5</div>
+        <div class="stat-card-label">Ventilators Available</div>
+        <div class="stat-card-bar"><div class="stat-card-fill" id="bar-vent" style="background:#6366F1;width:100%"></div></div>
+        <div class="stat-card-sub" id="sub-vent">5 of 5 available</div>
+      </div>
+      <div class="stat-card" style="border-top-color:#22C55E">
+        <div class="stat-card-icon">👨‍⚕️</div>
+        <div class="stat-card-num" id="sc-doc"  style="color:#22C55E">8</div>
+        <div class="stat-card-label">Doctors Available</div>
+        <div class="stat-card-bar"><div class="stat-card-fill" id="bar-doc"  style="background:#22C55E;width:100%"></div></div>
+        <div class="stat-card-sub" id="sub-doc">8 of 8 available</div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+      <div class="left-col">
+
+        <!-- INTAKE FORM -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-accent" style="background:#0D9488"></div>
+            <span class="card-title">Emergency Patient Intake</span>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Patient Name</label>
+              <input class="form-input" id="patientName" type="text" placeholder="Enter full name..."/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Severity Level</label>
+              <select class="form-select" id="severityLevel">
+                <option value="Low">🟢 Low</option>
+                <option value="Medium">🟡 Medium</option>
+                <option value="Critical">🔴 Critical</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-allocate" onclick="allocateResources()">⚡ Allocate Resources</button>
+        </div>
+
+        <!-- ALLOCATION RESULT -->
+        <div id="allocResult" style="display:none"></div>
+
+        <!-- OCCUPANCY -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-accent" style="background:#6366F1"></div>
+            <span class="card-title">Bed Occupancy Rate</span>
+          </div>
+          <div class="occ-wrap">
+            <div class="occ-ring" id="occRing">
+              <div class="occ-inner" id="occPct" style="color:#0D9488">0%</div>
+            </div>
+            <div class="occ-info">
+              <div class="occ-stat" id="occStat">Loading...</div>
+              <div class="occ-status" id="occStatus">✅ Within Safe Limits</div>
+              <div style="font-size:11px;color:#94A3B8;margin-top:6px">Critical threshold: 85%</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-col">
+
+        <!-- PIE CHART -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-accent" style="background:#06B6D4"></div>
+            <span class="card-title">Resource Breakdown</span>
+          </div>
+          <div class="pie-wrap">
+            <canvas id="pieChart" width="200" height="200"></canvas>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#0D9488"></div><span class="legend-label">ICU Beds</span><span class="legend-val" id="l-icu">10</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#06B6D4"></div><span class="legend-label">General Beds</span><span class="legend-val" id="l-gen">12</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#6366F1"></div><span class="legend-label">Ventilators</span><span class="legend-val" id="l-vent">5</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#22C55E"></div><span class="legend-label">Doctors</span><span class="legend-val" id="l-doc">8</span></div>
+          </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="summary-card">
+          <div class="card-header" style="margin-bottom:14px">
+            <div class="card-accent" style="background:#2DD4BF"></div>
+            <span class="card-title">Today's Summary</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-row-label">👥 Total Patients</span>
+            <span class="summary-row-val" id="sum-total" style="color:#2DD4BF">0</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-row-label">🚨 Critical Cases</span>
+            <span class="summary-row-val" id="sum-crit" style="color:#F87171">0</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-row-label">📦 Resources Used</span>
+            <span class="summary-row-val" id="sum-res" style="color:#2DD4BF">0</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= PATIENTS TAB ======= -->
+  <div class="tab-panel" id="tab-patients">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-accent" style="background:#0D9488"></div>
+        <span class="card-title">Patient Log</span>
+        <span class="card-badge" id="pt-count">0 patients</span>
+      </div>
+      <div class="table-wrap">
+        <div id="patientTable">
+          <div class="empty-state">
+            <div class="es-icon">📋</div>
+            <div class="es-title">No patients yet</div>
+            <div class="es-sub">Go to Dashboard and add a patient to see them here</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= ANALYTICS TAB ======= -->
+  <div class="tab-panel" id="tab-analytics">
+    <div class="analytics-grid">
+      <div class="ana-card" style="border-bottom-color:#06B6D4">
+        <div class="ana-icon">📈</div>
+        <div class="ana-num" style="color:#06B6D4">14.9</div>
+        <div class="ana-label">Avg Daily Admissions</div>
+        <div class="ana-sub">This week</div>
+      </div>
+      <div class="ana-card" style="border-bottom-color:#EF4444">
+        <div class="ana-icon">🚨</div>
+        <div class="ana-num" style="color:#EF4444" id="crit-rate">0%</div>
+        <div class="ana-label">Critical Rate</div>
+        <div class="ana-sub">Of all admissions today</div>
+      </div>
+      <div class="ana-card" style="border-bottom-color:#22C55E">
+        <div class="ana-icon">✅</div>
+        <div class="ana-num" style="color:#22C55E">92%</div>
+        <div class="ana-label">Allocation Success Rate</div>
+        <div class="ana-sub">Resources matched to need</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <div class="card-accent" style="background:#6366F1"></div>
+        <span class="card-title">Weekly Admissions Overview</span>
+      </div>
+      <canvas id="barChart" height="80"></canvas>
+      <div style="display:flex;gap:20px;justify-content:center;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:7px"><div style="width:12px;height:12px;border-radius:3px;background:#06B6D4"></div><span style="font-size:12px;color:#64748B">Total Admitted</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><div style="width:12px;height:12px;border-radius:3px;background:#EF4444"></div><span style="font-size:12px;color:#64748B">Critical Cases</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>
