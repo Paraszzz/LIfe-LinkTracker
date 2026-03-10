@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LIFE-LINK — Check Hospital Availability</title>
+<link rel="stylesheet" href="./style.css"/>
+<style>
+  /* Extra grid breakpoint for patient resource cards */
+  @media (min-width: 640px) { .res-avail-grid { grid-template-columns: repeat(4,1fr); } }
+  @media (min-width: 500px) { .symptom-grid   { grid-template-columns: repeat(3,1fr); } }
+  @media (min-width: 640px) { .visit-grid     { grid-template-columns: repeat(3,1fr); } }
+</style>
+</head>
+<body class="patient-body" id="patient-page">
+
+<!-- BLOBS (subtle, light) -->
+<div class="blob-layer">
+  <svg class="blob blob-1" viewBox="0 0 500 500" fill="none" style="opacity:0.12"><path d="M460 60C540 0,600 100,570 220C540 340,420 400,320 370C220 340,160 240,190 150C220 60,380 120,460 60Z" fill="#0D9488"/></svg>
+  <svg class="blob blob-2" viewBox="0 0 420 420" fill="none" style="opacity:0.1"><path d="M80 340C20 280,10 180,60 110C110 40,220 20,300 65C380 110,410 220,370 310C330 400,200 430,130 400C80 378,140 400,80 340Z" fill="#06B6D4"/></svg>
+</div>
+
+<!-- SHARED MODAL -->
+<div class="modal-overlay" id="sharedModal">
+  <div class="modal-box">
+    <div class="modal-icon" id="modalIcon">ℹ️</div>
+    <div class="modal-title" id="modalTitle">Info</div>
+    <div class="modal-msg" id="modalMsg"></div>
+    <button class="modal-btn" onclick="closeModal()">Got it</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-patient">
+  <a class="nav-patient-logo" href="./index.html"><span class="cross">✚</span> LIFE-LINK <span class="live-dot live-dot-green"></span></a>
+  <div class="nav-patient-right">
+    <a class="nav-link-dark" href="./index.html">Home</a>
+    <a class="nav-link-dark" href="#">About</a>
+    <button class="btn-staff" onclick="window.location.href='./login.html'">Staff Login →</button>
+  </div>
+</nav>
+
+<!-- HERO STRIP -->
+<div class="hero-strip">
+  <div class="hs-inner">
+    <div class="hs-badge"><span class="live-dot live-dot-white"></span> Live Hospital Status</div>
+    <div class="hs-title">CHECK HOSPITAL<br>AVAILABILITY</div>
+    <div class="hs-sub">See real-time bed availability, active services, and wait times — before you visit. Know before you go.</div>
+  </div>
+</div>
+<div class="last-updated">Last updated: <span id="lastUpdated">just now</span> · Auto-refreshes every 60 seconds</div>
+
+<!-- MAIN -->
+<div class="patient-main">
+
+  <!-- EMERGENCY BANNER -->
+  <div class="emergency-banner">
+    <div class="eb-left">
+      <div class="eb-icon">🚨</div>
+      <div>
+        <div class="eb-title">Medical Emergency?</div>
+        <div class="eb-sub">Call 108 immediately — do not wait to check availability</div>
+      </div>
+    </div>
+    <button class="eb-btn" onclick="showModal('🚨','Emergency: Call 108','If you or someone else is experiencing a life-threatening emergency — chest pain, difficulty breathing, stroke symptoms, or severe injury — call 108 immediately. Do not drive yourself.')">Call 108 →</button>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="serviceSearch" type="text" placeholder="Search for a service, department or resource..." oninput="filterServices()"/>
+    <span class="search-tag" id="searchTag" style="display:none">Showing results</span>
+  </div>
+
+  <!-- RESOURCE AVAILABILITY -->
+  <div class="section-title">Live Resource Availability</div>
+  <div class="res-avail-grid" id="resAvailGrid">
+    <!-- rendered by JS -->
+  </div>
+
+  <!-- SERVICES TABLE -->
+  <div class="services-card">
+    <div class="services-header">
+      <div class="services-title">🏥 Hospital Services Status</div>
+      <button class="refresh-btn" id="refreshBtn" onclick="simulateRefresh()">
+        <span class="spin-icon">🔄</span>
+        <span class="label-txt">🔄 Refresh</span>
+      </button>
+    </div>
+    <div id="servicesTable"><!-- rendered by JS --></div>
+  </div>
+
+  <!-- SYMPTOM CHECKER -->
+  <div class="symptom-card">
+    <div class="sc-header">
+      <span style="font-size:28px">🩺</span>
+      <div class="sc-title">Symptom Checker</div>
+    </div>
+    <div class="sc-sub">Select your symptoms and we'll tell you which department to visit and how urgently.</div>
+    <div class="symptom-grid" id="symptomGrid"><!-- rendered by JS --></div>
+    <button class="btn-check" id="checkBtn" onclick="checkSymptoms()" disabled>Select symptoms above to check →</button>
+    <div id="recommendation" class="recommendation" style="display:none"></div>
+  </div>
+
+  <!-- BEFORE YOU VISIT -->
+  <div class="section-title">Before You Visit</div>
+  <div class="visit-grid">
+    <div class="visit-card"><div class="vc-icon">🕐</div><div class="vc-title">OPD Hours</div><div class="vc-val">Mon–Sat: <span class="highlight">9:00 AM – 5:00 PM</span><br>Emergency: <span class="highlight">24/7</span></div></div>
+    <div class="visit-card"><div class="vc-icon">⏱️</div><div class="vc-title">Avg Wait Time</div><div class="vc-val">Emergency: <span class="highlight">5–10 min</span><br>OPD: <span class="highlight">20–40 min</span></div></div>
+    <div class="visit-card"><div class="vc-icon">📋</div><div class="vc-title">What to Bring</div><div class="vc-val"><span class="highlight">Aadhar card</span>, previous prescriptions, insurance card</div></div>
+    <div class="visit-card"><div class="vc-icon">🅿️</div><div class="vc-title">Parking</div><div class="vc-val">Available at <span class="highlight">Gate 2 & 4</span><br>Free for patients</div></div>
+    <div class="visit-card"><div class="vc-icon">📞</div><div class="vc-title">Contact</div><div class="vc-val">Reception: <span class="highlight">+91 98765 43210</span><br>Emergency: <span class="highlight">108</span></div></div>
+    <div class="visit-card"><div class="vc-icon">💳</div><div class="vc-title">Insurance</div><div class="vc-val"><span class="highlight">Ayushman Bharat</span>, ESI, and most major plans accepted</div></div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo"><span class="cross">✚</span> LIFE-LINE</div>
+  <div class="foot-copy">FOR PATIENTS · REAL-TIME HOSPITAL INFO · 2025</div>
+</footer>
+
+<script src="./app.js"></script>
+</body>
+</html>
+
