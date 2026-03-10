@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Life-link — Real-Time Hospital Resource Tracking</title>
+<link rel="stylesheet" href="./style.css"/>
+</head>
+<body class="index-body" id="index-page">
+
+<!-- BLOBS -->
+<div class="blob-layer">
+  <svg class="blob blob-1" viewBox="0 0 700 600" fill="none"><path d="M620 80C700 0,780 120,740 260C700 400,560 460,440 420C320 380,260 260,300 160C340 60,540 160,620 80Z" fill="#4d8f91"/></svg>
+  <svg class="blob blob-2" viewBox="0 0 620 580" fill="none"><path d="M540 500C620 440,660 300,600 200C540 100,400 60,300 120C200 180,160 320,200 420C240 520,460 560,540 500Z" fill="#3a7a7c"/></svg>
+  <svg class="blob blob-3" viewBox="0 0 500 500" fill="none"><path d="M80 200C0 120,40 0,160 20C280 40,360 140,340 260C320 380,180 420,100 360C20 300,160 280,80 200Z" fill="#4d8f91"/></svg>
+</div>
+
+<!-- SHARED MODAL -->
+<div class="modal-overlay" id="sharedModal">
+  <div class="modal-box">
+    <div class="modal-icon" id="modalIcon">ℹ️</div>
+    <div class="modal-title" id="modalTitle">Info</div>
+    <div class="modal-msg" id="modalMsg"></div>
+    <button class="modal-btn" onclick="closeModal()">Got it</button>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- NAV -->
+  <nav class="nav-hero">
+    <a class="nav-logo" href="./index.html"><span class="cross">✚</span> LIFE-LINK <span class="live-dot live-dot-white"></span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="./patient.html">For Patients</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Team</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-nav-patient" onclick="window.location.href='./patient.html'">🏥 Check Availability</button>
+      <button class="btn-nav-solid"   onclick="window.location.href='./login.html'">Staff Login →</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <!-- LEFT -->
+    <div class="hero-left">
+      <div class="hero-badge"><span class="live-dot live-dot-white"></span> Real-Time Hospital OS</div>
+
+      <h1 class="hero-headline">
+        <span class="word">SAVE</span>
+        <span class="word">LIVES <span class="dim">WITH</span></span>
+        <span class="word">REAL-TIME</span>
+        <span class="word">TRACKING</span>
+      </h1>
+
+      <p class="hero-sub">
+        <strong>LIFE_LINK</strong> gives hospital staff instant visibility into beds, ventilators, and doctors — and automatically allocates resources the moment a patient arrives.
+      </p>
+
+      <div class="hero-cta-group">
+        <button class="btn-cta" onclick="window.location.href='./login.html'">Launch Dashboard →</button>
+        <a class="hero-patient-link" href="./patient.html">🏥 Are you a patient? Check hospital availability →</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num">15K+</span><span class="stat-label">Patients Tracked</span></div>
+        <div class="stat-div"></div>
+        <div class="stat-item"><span class="stat-num">92%</span><span class="stat-label">Faster Allocation</span></div>
+        <div class="stat-div"></div>
+        <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Live Monitoring</span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT MOCKUP -->
+    <div class="hero-right">
+      <div class="pedestal">
+        <div class="pedestal-glow"></div>
+        <div class="dash-card">
+          <div class="dc-header">
+            <span class="dc-title">Resource Dashboard</span>
+            <span class="dc-live"><span class="live-dot live-dot-green"></span> Live</span>
+          </div>
+          <div class="res-grid-mock">
+            <div class="rc t"><div class="rc-icon">🛏️</div><div class="rc-num" id="n-icu">5</div><div class="rc-label">ICU Beds</div><div class="rc-bar"><div class="rc-fill" style="width:50%;background:#0D9488"></div></div></div>
+            <div class="rc c"><div class="rc-icon">🏨</div><div class="rc-num" id="n-gen">10</div><div class="rc-label">General Beds</div><div class="rc-bar"><div class="rc-fill" style="width:80%;background:#06B6D4"></div></div></div>
+            <div class="rc i"><div class="rc-icon">🫁</div><div class="rc-num" id="n-vent">3</div><div class="rc-label">Ventilators</div><div class="rc-bar"><div class="rc-fill" style="width:60%;background:#6366F1"></div></div></div>
+            <div class="rc g"><div class="rc-icon">👨‍⚕️</div><div class="rc-num" id="n-doc">6</div><div class="rc-label">Doctors</div><div class="rc-bar"><div class="rc-fill" style="width:75%;background:#22C55E"></div></div></div>
+          </div>
+          <div class="pt-row">
+            <div class="pt-info">
+              <div class="pt-av" style="background:#EF4444">A</div>
+              <div><div class="pt-name">Sanket babhare</div><div class="pt-sub">ICU Bed + Ventilator · 09:42</div></div>
+            </div>
+            <span class="sev-badge cr">🔴 Critical</span>
+          </div>
+          <div class="pt-row">
+            <div class="pt-info">
+              <div class="pt-av" style="background:#F59E0B">R</div>
+              <div><div class="pt-name"> Yusuf Saudagar</div><div class="pt-sub">General Bed + Doctor · 10:15</div></div>
+            </div>
+            <span class="sev-badge me">🟡 Medium</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES STRIP -->
+  <div class="features" id="features">
+    <div class="feat"><div class="feat-icon">⚡</div><div class="feat-title">Instant Allocation</div><div class="feat-desc">Resources assigned in seconds based on patient severity — ICU, ventilator, or general ward automatically.</div></div>
+    <div class="feat"><div class="feat-icon">📊</div><div class="feat-title">Live Analytics</div><div class="feat-desc">Weekly trends, occupancy rates, and critical case tracking — all updated in real time on the dashboard.</div></div>
+    <div class="feat"><div class="feat-icon">🚨</div><div class="feat-title">Low Resource Alerts</div><div class="feat-desc">Automatic red alerts when ICU beds, ventilators, or staff fall below safe operating thresholds.</div></div>
+    <div class="feat"><div class="feat-icon">🏥</div><div class="feat-title">Patient Portal</div><div class="feat-desc">Patients can check live bed availability, services, and use the symptom checker before visiting.</div></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-logo"><span class="cross">✚</span> LIFE-LINK</div>
+    <div class="foot-copy"></div>
+  </footer>
+
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>
