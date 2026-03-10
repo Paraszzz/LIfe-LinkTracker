@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LIFE-LINK — Sign In</title>
+<link rel="stylesheet" href="./style.css"/>
+</head>
+<body class="login-body" id="login-page">
+
+<!-- BLOBS -->
+<div class="blob-layer">
+  <svg class="blob blob-1" viewBox="0 0 520 500" fill="none" style="width:420px"><path d="M460 60C540 0,600 100,570 220C540 340,420 400,320 370C220 340,160 240,190 150C220 60,380 120,460 60Z" fill="#4d8f91"/></svg>
+  <svg class="blob blob-2" viewBox="0 0 480 460" fill="none" style="width:380px"><path d="M80 380C20 320,10 200,60 120C110 40,230 20,320 70C410 120,440 240,400 330C360 420,240 460,160 430C100 408,140 440,80 380Z" fill="#3a7a7c"/></svg>
+</div>
+
+<!-- SHARED MODAL -->
+<div class="modal-overlay" id="sharedModal">
+  <div class="modal-box">
+    <div class="modal-icon" id="modalIcon">ℹ️</div>
+    <div class="modal-title" id="modalTitle">Info</div>
+    <div class="modal-msg" id="modalMsg"></div>
+    <button class="modal-btn" onclick="closeModal()">Got it</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-hero">
+  <a class="nav-logo" href="./index.html"><span class="cross">✚</span> LIFE-LINK <span class="live-dot live-dot-white"></span></a>
+  <div class="nav-actions">
+    <a href="./patient.html" style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.75);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;padding:9px 16px;transition:color 0.2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">🏥 Patient Portal</a>
+    <button class="back-btn" onclick="window.location.href='./index.html'">← Back to Home</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="login-main">
+  <div class="login-box">
+
+    <div class="lb-header">
+      <div class="lb-icon">🏥</div>
+      <div class="lb-title">Welcome to LIFE-LINK</div>
+      <div class="lb-sub">Select your role and enter your Staff ID to access the live dashboard</div>
+    </div>
+
+    <div class="role-label">Select Your Role</div>
+    <div class="role-grid">
+      <div class="role-card" onclick="selectRole('Nurse', this)">
+        <span class="role-emoji">🏥</span>
+        <div class="role-name">Nurse</div>
+        <div class="role-desc">Patient care & intake</div>
+      </div>
+      <div class="role-card" onclick="selectRole('Doctor', this)">
+        <span class="role-emoji">👨‍⚕️</span>
+        <div class="role-name">Doctor</div>
+        <div class="role-desc">Diagnose & treat</div>
+      </div>
+      <div class="role-card" onclick="selectRole('Admin', this)">
+        <span class="role-emoji">👑</span>
+        <div class="role-name">Admin</div>
+        <div class="role-desc">Full system access</div>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-txt">Enter Staff ID</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <label class="form-label-dark">Staff ID</label>
+    <div class="input-wrap">
+      <span class="input-icon">🪪</span>
+      <input class="form-input-lg" type="text" id="staffId" placeholder="e.g. STAFF-2025" maxlength="20"/>
+    </div>
+
+    <div class="error-msg" id="errorMsg">⚠️ Please select a role and enter your Staff ID to continue.</div>
+
+    <button class="btn-enter" onclick="handleLogin()">Enter System →</button>
+
+    <div style="text-align:center;margin-top:20px">
+      <a href="./patient.html" style="font-size:13px;color:#94A3B8;text-decoration:none;font-weight:500">Not staff? <span style="color:#0D9488;font-weight:600;text-decoration:underline">Check availability as a patient →</span></a>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo"><span class="cross">✚</span> LIFE-LINK</div>
+  <div class="foot-copy"></div>
+</footer>
+
+<script src="./app.js"></script>
+</body>
+</html>
+
